@@ -63,19 +63,14 @@ public class EthereumBean {
 
     public String addTransaction(byte[] audioData, Account account){
         byte[] addrBytes = account.getAddress().toByteArray();
-        String authorship = findAudioAuthorship(audioData);
-        if(authorship == null){
-            try {
-                synchronized (lock) {
-                    Transaction tx = standAlone.createTransaction(ECKey.fromPrivate(account.getPrivateKey()), nonce++, addrBytes, null, audioData);
-                    standAlone.submitTransaction(tx);
-                }
-                return "success";
-            } catch (RuntimeException e){
-                return "Invalid Block";
+        try {
+            synchronized (lock) {
+                Transaction tx = standAlone.createTransaction(ECKey.fromPrivate(account.getPrivateKey()), nonce++, addrBytes, null, audioData);
+                standAlone.submitTransaction(tx);
             }
-        } else {
-            return "Audio already authorshiped by " + authorship;
+            return "success";
+        } catch (RuntimeException e){
+            return "Invalid Block";
         }
     }
 
