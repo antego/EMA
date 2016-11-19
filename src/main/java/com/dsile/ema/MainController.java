@@ -3,6 +3,7 @@ package com.dsile.ema;
 import com.dsile.ema.entity.Account;
 import com.dsile.ema.entity.AudioDataForAdd;
 import com.dsile.ema.entity.SingleData;
+import com.dsile.ema.entity.TransferingAuthorship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +42,12 @@ public class MainController {
     @ResponseBody
     SingleData addAudio(@RequestBody AudioDataForAdd audioDataForAdd){
         return new SingleData(ethereumBean.addTransaction(audioDataForAdd.getHash().getBytes(), audioDataForAdd.getAccount()));
+    }
+
+    @RequestMapping(value = "/transfer-authorship", method = RequestMethod.POST)
+    @ResponseBody
+    SingleData trasnferAuthorship(@RequestBody TransferingAuthorship transferingAuthorship){
+        return new SingleData(ethereumBean.transferAuthorship(transferingAuthorship.getHash(), transferingAuthorship.getSenderKey(), transferingAuthorship.getReceiverAddress()));
     }
 
 }
