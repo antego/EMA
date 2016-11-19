@@ -1,25 +1,22 @@
 package com.dsile.ema;
 
 import com.dsile.ema.entity.Account;
-import com.google.gson.Gson;
 import org.ethereum.config.SystemProperties;
 import org.ethereum.config.blockchain.FrontierConfig;
 import org.ethereum.core.Block;
 import org.ethereum.core.Transaction;
 import org.ethereum.crypto.ECKey;
 import org.ethereum.util.blockchain.StandaloneBlockchain;
-import org.spongycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Random;
 
 public class EthereumBean {
 
     private StandaloneBlockchain standAlone;
     private final Object lock = new Object();
-    private long nonce = 2;
+    private long nonce = 0;
 
 
     public void start() {
@@ -70,7 +67,7 @@ public class EthereumBean {
         if(authorship == null){
             try {
                 synchronized (lock) {
-                    Transaction tx = standAlone.createTransaction(ECKey.fromPrivate(account.getPrivateKey()), 0, addrBytes, null, audioData);
+                    Transaction tx = standAlone.createTransaction(ECKey.fromPrivate(account.getPrivateKey()), nonce++, addrBytes, null, audioData);
                     standAlone.submitTransaction(tx);
                 }
                 return "success";
@@ -85,7 +82,8 @@ public class EthereumBean {
     private String findAudioAuthorship(byte[] data){
         Block currentBlock = standAlone.getBlockchain().getBestBlock();
         while(currentBlock != null){
-            Optional<Transaction> result = currentBlock.getTransactionsList().stream().filter(t -> Arrays.equals(t.getData(),data)).findFirst();
+            Optional<Transaction> result = currentBlock.getTransactionsList()
+                    .stream().filter(t -> Arrays.equals(t.getData(),data)).findFirst();
             if(result.isPresent()){
                 return new BigInteger(result.get().getSender()).toString();
             }
@@ -94,8 +92,8 @@ public class EthereumBean {
         return null;
     }
 
-    public String isAudioDataUniq(String data){
-        return findAudioAuthorship(data.getBytes()) + "";
+    public String isAudioDataUniq(byte[] bytes){
+        return findAudioAuthorship(bytes) + "";
     }
 
     public Account createNewAccount(){

@@ -6,6 +6,8 @@ import com.dsile.ema.entity.SingleData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
+
 @RestController
 public class MainController {
 
@@ -25,7 +27,8 @@ public class MainController {
     @RequestMapping(value = "/isaudiouniq", method = RequestMethod.POST)
     @ResponseBody
     SingleData checkAudio(@RequestBody SingleData audioHash){
-        return new SingleData(ethereumBean.isAudioDataUniq(audioHash.getData()));
+        String checkResult = ethereumBean.isAudioDataUniq(audioHash.getData().getBytes(StandardCharsets.UTF_8));
+        return new SingleData(checkResult);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
