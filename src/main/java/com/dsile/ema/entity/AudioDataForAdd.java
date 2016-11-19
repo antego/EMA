@@ -1,17 +1,15 @@
 package com.dsile.ema.entity;
 
-import java.math.BigInteger;
-
 /**
  * Created by DeSile on 11/18/2016.
  */
 public class AudioDataForAdd {
 
-    String audiohash;
+    String hash;
     Account account;
 
-    public AudioDataForAdd(String audiohash, Account account) {
-        this.audiohash = audiohash;
+    public AudioDataForAdd(String hash, Account account) {
+        this.hash = hash;
         this.account = account;
     }
 
@@ -19,12 +17,12 @@ public class AudioDataForAdd {
 
     }
 
-    public String getAudiohash() {
-        return audiohash;
+    public String getHash() {
+        return hash;
     }
 
-    public void setAudiohash(String audiohash) {
-        this.audiohash = audiohash;
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public Account getAccount() {

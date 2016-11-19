@@ -37,7 +37,7 @@ public class MainController {
     @RequestMapping(value = "/addaudio", method = RequestMethod.POST)
     @ResponseBody
     SingleData addAudio(@RequestBody AudioDataForAdd audioDataForAdd){
-        return new SingleData(ethereumBean.addTransaction(audioDataForAdd.getAudiohash().getBytes(), audioDataForAdd.getAccount()));
+        return new SingleData(ethereumBean.addTransaction(audioDataForAdd.getHash().getBytes(), audioDataForAdd.getAccount()));
     }
 
 }
