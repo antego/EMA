@@ -3,6 +3,7 @@ package com.dsile.ema;
 import com.dsile.ema.entity.Account;
 import com.dsile.ema.entity.AudioDataForAdd;
 import com.dsile.ema.entity.SingleData;
+import com.dsile.ema.entity.TransferingAuthorship;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -80,8 +81,41 @@ public class EMAServiceTest {
         JSONObject audioHashJson = new JSONObject(audioHash);
         HttpEntity<String> entity = new HttpEntity<>(audioHashJson.toString(), httpHeaders);
 
-        ResponseEntity<SingleData> resultAddAudio = this.testRestTemplate.postForEntity("/isaudiouniq", entity , SingleData.class);
-        assertThat(resultAddAudio.getBody().getData()).isEqualTo("null");
+        ResponseEntity<SingleData> resultCheckAudio = this.testRestTemplate.postForEntity("/isaudiouniq", entity , SingleData.class);
+        assertThat(resultCheckAudio.getBody().getData()).isEqualTo("null");
+    }
+
+    @Test
+    public void testTransferingAuthorship() throws Exception {
+        ResponseEntity<Account> senderEntity = this.testRestTemplate.getForEntity("/register", Account.class);
+        ResponseEntity<Account> receiverEntity = this.testRestTemplate.getForEntity("/register", Account.class);
+        assertThat(senderEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(receiverEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        String audioHash = new String(new byte[]{1,2,3,4,5,6,7,8,9});
+        AudioDataForAdd adfa = new AudioDataForAdd(audioHash,senderEntity.getBody());
+        TransferingAuthorship ta = new TransferingAuthorship(audioHash,senderEntity.getBody().getPrivateKey(),receiverEntity.getBody().getAddress());
+
+        JSONObject adfaJson = new JSONObject(adfa);
+        JSONObject transferJson = new JSONObject(ta);
+
+        JSONObject audioHashJson = new JSONObject(new SingleData(audioHash));
+        HttpEntity<String> audioEntity = new HttpEntity<>(audioHashJson.toString(), httpHeaders);
+
+        HttpEntity<String> entity = new HttpEntity<>(adfaJson.toString(), httpHeaders);
+        HttpEntity<String> entity2 = new HttpEntity<>(transferJson.toString(), httpHeaders);
+
+        ResponseEntity<SingleData> resultAddAudio = this.testRestTemplate.postForEntity("/addaudio", entity , SingleData.class);
+        assertThat(resultAddAudio.getBody().getData()).isEqualTo("success");
+
+        ResponseEntity<SingleData> resultCheckAudio = this.testRestTemplate.postForEntity("/isaudiouniq", audioEntity , SingleData.class);
+        assertThat(resultCheckAudio.getBody().getData()).contains(senderEntity.getBody().getAddress().toString());
+
+        ResponseEntity<SingleData> resultAddAudio2 = this.testRestTemplate.postForEntity("/transfer-authorship", entity2 , SingleData.class);
+        assertThat(resultAddAudio2.getBody().getData()).contains("Authorship successful transfered");
+
+        ResponseEntity<SingleData> resultCheckAudio2 = this.testRestTemplate.postForEntity("/isaudiouniq", audioEntity , SingleData.class);
+        assertThat(resultCheckAudio2.getBody().getData()).contains(receiverEntity.getBody().getAddress().toString());
     }
 
 
