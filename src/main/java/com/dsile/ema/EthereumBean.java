@@ -105,7 +105,12 @@ public class EthereumBean {
     }
 
     public String transferAuthorship(String hash, BigInteger senderKey, BigInteger receiverAddress) {
-        ECKey sender = ECKey.fromPrivate(senderKey);
+        ECKey sender;
+        try {
+            sender = ECKey.fromPrivate(senderKey);
+        } catch (NullPointerException e){
+            return "Adress is not valid";
+        }
         Block currentBlock = standAlone.getBlockchain().getBestBlock();
         while(currentBlock != null){
             Optional<Transaction> result = currentBlock.getTransactionsList()
