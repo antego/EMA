@@ -6,7 +6,6 @@ import com.dsile.ema.entity.SingleData;
 import com.dsile.ema.entity.TransferingAuthorship;
 import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,6 +116,4 @@ public class EMAServiceTest {
         ResponseEntity<SingleData> resultCheckAudio2 = this.testRestTemplate.postForEntity("/isaudiouniq", audioEntity , SingleData.class);
         assertThat(resultCheckAudio2.getBody().getData()).contains(receiverEntity.getBody().getAddress().toString());
     }
-
-
 }
