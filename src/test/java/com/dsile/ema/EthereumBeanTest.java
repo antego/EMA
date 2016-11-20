@@ -61,4 +61,17 @@ public class EthereumBeanTest {
         assertEquals("Invalid sender account", ethereum.addTransaction(bytes1, invalidAccount));
     }
 
+    @Test
+    public void shouldTransferAudio() {
+        Account account1 = ethereum.createNewAccount();
+
+        byte[] bytes = "hash".getBytes();
+        ethereum.addTransaction(bytes, account1);
+
+        Account account2 = ethereum.createNewAccount();
+
+        System.out.println(ethereum.transferAuthorship("hash", account1.getPrivateKey(), account2.getAddress()));
+
+    }
+
 }
