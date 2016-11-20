@@ -1,21 +1,17 @@
 package com.dsile.ema.entity;
 
-import java.math.BigInteger;
-
 /**
  * Created by DeSile on 11/19/2016.
  */
 public class TransferingAuthorship {
 
     String hash;
-    BigInteger senderKey;
-    BigInteger receiverAddress;
+    Account account;
 
 
-    public TransferingAuthorship(String hash, BigInteger senderKey, BigInteger receiverAddress) {
+    public TransferingAuthorship(String hash, Account account) {
         this.hash = hash;
-        this.senderKey = senderKey;
-        this.receiverAddress = receiverAddress;
+        this.account = account;
     }
 
     public TransferingAuthorship(){
@@ -30,19 +26,11 @@ public class TransferingAuthorship {
         this.hash = hash;
     }
 
-    public BigInteger getSenderKey() {
-        return senderKey;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setSenderKey(BigInteger senderKey) {
-        this.senderKey = senderKey;
-    }
-
-    public BigInteger getReceiverAddress() {
-        return receiverAddress;
-    }
-
-    public void setReceiverAddress(BigInteger receiverAddress) {
-        this.receiverAddress = receiverAddress;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

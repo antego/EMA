@@ -86,16 +86,18 @@ public class EMAServiceTest {
 
     @Test
     public void testTransferingAuthorship() throws Exception {
-        ResponseEntity<Account> senderEntity = this.testRestTemplate.getForEntity("/register", Account.class);
-        ResponseEntity<Account> receiverEntity = this.testRestTemplate.getForEntity("/register", Account.class);
-        assertThat(senderEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(receiverEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ResponseEntity<Account> firstAccount = this.testRestTemplate.getForEntity("/register", Account.class);
+        ResponseEntity<Account> seccondAccount = this.testRestTemplate.getForEntity("/register", Account.class);
+        assertThat(firstAccount.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(seccondAccount.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         String audioHash = new String(new byte[]{1,2,3,4,5,6,7,8,9});
-        AudioDataForAdd adfa = new AudioDataForAdd(audioHash,senderEntity.getBody());
-        TransferingAuthorship ta = new TransferingAuthorship(audioHash,senderEntity.getBody().getPrivateKey(),receiverEntity.getBody().getAddress());
+        AudioDataForAdd dataForAddForFirstAccount = new AudioDataForAdd(audioHash,firstAccount.getBody());
+        Account fromSecondToFirstAccount = new Account(seccondAccount.getBody().getAddress(),
+                firstAccount.getBody().getPrivateKey());
+        TransferingAuthorship ta = new TransferingAuthorship(audioHash, fromSecondToFirstAccount);
 
-        JSONObject adfaJson = new JSONObject(adfa);
+        JSONObject adfaJson = new JSONObject(dataForAddForFirstAccount);
         JSONObject transferJson = new JSONObject(ta);
 
         JSONObject audioHashJson = new JSONObject(new SingleData(audioHash));
@@ -108,12 +110,12 @@ public class EMAServiceTest {
         assertThat(resultAddAudio.getBody().getData()).isEqualTo("success");
 
         ResponseEntity<SingleData> resultCheckAudio = this.testRestTemplate.postForEntity("/isaudiouniq", audioEntity , SingleData.class);
-        assertThat(resultCheckAudio.getBody().getData()).contains(senderEntity.getBody().getAddress().toString());
+        assertThat(resultCheckAudio.getBody().getData()).contains(firstAccount.getBody().getAddress().toString());
 
-        ResponseEntity<SingleData> resultAddAudio2 = this.testRestTemplate.postForEntity("/transfer-authorship", entity2 , SingleData.class);
-        assertThat(resultAddAudio2.getBody().getData()).contains("Authorship successful transfered");
+        ResponseEntity<SingleData> transferResponce = this.testRestTemplate.postForEntity("/transfer-authorship", entity2 , SingleData.class);
+        assertThat(transferResponce.getBody().getData()).contains("Authorship successful transfered");
 
         ResponseEntity<SingleData> resultCheckAudio2 = this.testRestTemplate.postForEntity("/isaudiouniq", audioEntity , SingleData.class);
-        assertThat(resultCheckAudio2.getBody().getData()).contains(receiverEntity.getBody().getAddress().toString());
+        assertThat(resultCheckAudio2.getBody().getData()).contains(seccondAccount.getBody().getAddress().toString());
     }
 }

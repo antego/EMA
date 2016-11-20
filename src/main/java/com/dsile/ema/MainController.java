@@ -47,7 +47,9 @@ public class MainController {
     @RequestMapping(value = "/transfer-authorship", method = RequestMethod.POST)
     @ResponseBody
     SingleData trasnferAuthorship(@RequestBody TransferingAuthorship transferingAuthorship){
-        return new SingleData(ethereumBean.transferAuthorship(transferingAuthorship.getHash(), transferingAuthorship.getSenderKey(), transferingAuthorship.getReceiverAddress()));
+        return new SingleData(ethereumBean.transferAuthorship(transferingAuthorship.getHash(),
+                transferingAuthorship.getAccount().getPrivateKey(),
+                transferingAuthorship.getAccount().getAddress()));
     }
 
 }
