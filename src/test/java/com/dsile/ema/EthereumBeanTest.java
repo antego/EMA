@@ -58,7 +58,7 @@ public class EthereumBeanTest {
         Account invalidAccount = account1;
         invalidAccount.setPrivateKey(new BigInteger("9375092345"));
 
-        assertEquals("Invalid Account", ethereum.addTransaction(bytes1, invalidAccount));
+        assertEquals("Invalid sender account", ethereum.addTransaction(bytes1, invalidAccount));
     }
 
 }

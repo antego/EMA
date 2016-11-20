@@ -1,19 +1,16 @@
 package com.dsile.ema;
 
 import com.dsile.ema.entity.Account;
-import com.google.gson.Gson;
 import org.ethereum.config.SystemProperties;
 import org.ethereum.config.blockchain.FrontierConfig;
 import org.ethereum.core.Block;
 import org.ethereum.core.Transaction;
 import org.ethereum.crypto.ECKey;
 import org.ethereum.util.blockchain.StandaloneBlockchain;
-import org.spongycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Random;
 
 public class EthereumBean {
 
@@ -65,6 +62,7 @@ public class EthereumBean {
     }
 
     public String addTransaction(byte[] audioData, Account account){
+        if (!account.validate()) return "Invalid sender account";
         byte[] addrBytes = account.getAddress().toByteArray();
         String authorship = findAudioAuthorship(audioData);
         if(authorship == null) {
